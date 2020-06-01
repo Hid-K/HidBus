@@ -17,7 +17,7 @@ int main()
 	UART::init(203);
 	DDRD |= (1<<5);
 
-	sei();
+	sei(); //Allowing interrupts
 
 	PORTD |= (1<<5);
 	_delay_ms(1000);
