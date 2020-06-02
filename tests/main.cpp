@@ -8,9 +8,9 @@
 #include <stdlib.h> 
 #include <avr/pgmspace.h>
 
-#include "HidBus/UART/AvrUart.hpp"
-#include "HidBus/HidBus.hpp"
-#include "HidBus/HID_UNIT_CONFIG.hpp"
+#include "../HidBus/UART/AvrUart.hpp"
+#include "../HidBus/HidBus.hpp"
+#include "../HidBus/HID_UNIT_CONFIG.hpp"
 
 int main()
 {
