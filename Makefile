@@ -1,8 +1,26 @@
+#Controller:
+MMCU = atmega16
+
+#Chip freq
+FREQ = 16000000UL
+
+#Compiler:
+CC = avr-g++
+
+#Compiler flags:
+CFLAGS = -Wall -O1 -mmcu=$(MMCU) -D F_CPU=$(FREQ)
+
+#Output file way:
+OUTPUT = build/
+
 all:
-	avr-g++ -mmcu=atmega16 tests/main.cpp -o build/main -O1 -Wall -Wextra 
-	avr-objcopy -j .text -j .data -O ihex  build/main  build/main.hex
-	minipro -p ATMEGA16L -w build/main.hex -I
-	minipro -p ATMEGA16L -w fuse_bits/ATMEGA16L.conf -c config -e -I
+	$(CC) $(CFLAGS) tests/main.cpp -o $(OUTPUT)/main
+	avr-objcopy -j .text -j .data -O ihex  $(OUTPUT)/main  $(OUTPUT)/main.hex
+	minipro -p $(MMCU) -w $(OUTPUT)/main.hex -I
+	minipro -p $(MMCU) -w fuse_bits/$(MMCU).conf -c config -e -I
+
+readFuseBits:
+	minipro -p $(MMCU) -r fuse_bits/$(MMCU).conf -c config -e -I
 
 git_push:
 	git add *
