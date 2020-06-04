@@ -1,5 +1,5 @@
-// #ifdef HID_UART_BUS_H
-// #define HID_UART_BUS_H
+#ifndef HID_UART_BUS_H
+#define HID_UART_BUS_H
 
 #include "UART/AvrUart.hpp"
 #include <avr/interrupt.h>
@@ -46,49 +46,45 @@ namespace HidBus {
 	  return crc;
 	};
 
-	void HidSendData(const unsigned char * data, unsigned int dataLen, unsigned int dest_uid)
+	void SendData(const void * data, unsigned int dataLen, unsigned int dest_uid)
 	{
-		while ( (UCSRA & (1<<RXC)) ); //Waiting before uart data will be unavailable
+		// while ( (UCSRA & (1<<RXC)) ); //Waiting before uart data will be unavailable
 
 		/*Interrupt ban*/
 		asm("cli");
-
-		/*Getting data crc checksumm*/
-		unsigned char crc = getCRC(data, dataLen);
 		
 		/*Building package header*/
-		HidPkgHeader header = {UID, dest_uid, dataLen, crc};
+		HidPkgHeader header = {
+							   .SRC_UID  =  UID,
+							   .DEST_UID =  dest_uid,
+							   .DATALen  =  dataLen,
+							   .crc      =  getCRC((const unsigned char*)data, dataLen)
+							  };
 
-		// /*Memory allocation for package header and data*/
-		// unsigned char * package = (unsigned char *)malloc(sizeof(HidPkgHeader)+dataLen);
-		// /*Copying Header and data into single memory area to send them in one flow*/
-		// memcpy(package, &header, sizeof(HidPkgHeader));
-		// memcpy((package+sizeof(HidPkgHeader)), data, dataLen);
+		UART::write(&header, sizeof(HidPkgHeader));
+		UART::write(data, dataLen);
 
-		UART::write((unsigned char *)&header, sizeof(HidPkgHeader));
-		UART::write((unsigned char *)data, dataLen);
-		UART::write((unsigned char *)data, sizeof(HidPackage::DATA) - dataLen);
-
-		// free(package);
-		sei();
+		/*Interrupt unban*/
+		asm("sei");
+		return;
 	};
 
-	HidPackage HidRecieveData()
+	HidPackage RecieveData()
 	{
+		/*Interrupt ban*/
 		asm("cli");
 
 		HidPackage pkg;
-		UART::read((unsigned char *)&pkg, sizeof(HidPackage));
-		// HidPkgHeader header;
-		// readUART((unsigned char *)&header, sizeof(HidPkgHeader));
+		if (pkg.header.DEST_UID == UID &&
+			pkg.header.DATALen <= sizeof(HidPackage::DATA))
+		{
+			UART::read(pkg.DATA, pkg.header.DATALen);
+		};
 
-		// unsigned char * package = (unsigned char *)malloc(header.DATALen);
-		// readUART(package, header.DATALen);
-
-		// HidPackage pkg {header, package};
-		sei();
+		/*Interrupt unban*/
+		asm("sei");
 		return pkg;
 	};
 
 };
-// #endif
+#endif

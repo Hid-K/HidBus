@@ -35,22 +35,22 @@ namespace UART {
 		#error "AvrUart.hpp: device type not defined"
 	#endif
 
-	int read(unsigned char * buf, unsigned int dataLength)
+	int read(void * buf, unsigned int dataLength)
 	{
 		for(unsigned int i = 0; i<dataLength; ++i)
 		{
 			while( !(UCSRA & (1<<RXC)) ); //Waiting for recieve buffer clear
-			buf[i] = UDR;
+			((unsigned char *)(buf))[i] = UDR;
 		};
 		return 0;
 	};
 
-	int write(const unsigned char * buf, unsigned int dataLength)
+	int write(const void * buf, unsigned int dataLength)
 	{
 		for (unsigned int i = 0; i < dataLength; ++i)
 		{
 			while ( !(UCSRA & (1<<UDRE)) ); //Waiting for recieve buffer clear
-			UDR = buf[i];
+			UDR = ((const unsigned char *)(buf))[i];
 		};
 		return 0;
 	};
