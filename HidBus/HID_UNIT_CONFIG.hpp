@@ -1,11 +1,6 @@
 #ifndef HID_UNIT_CONFIG_H
 #define HID_UNIT_CONFIG_H
 
-#define PWM_OUTPUT = 12;
-
-#define serialBitRate = 9600;
-
-
 const unsigned int UID		= 1;
 #define UID_EEPROM_ADDR		0x00
 
