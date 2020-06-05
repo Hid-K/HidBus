@@ -10,7 +10,7 @@
 
 #include "../HidBus/UART/AvrUart.hpp"
 #include "../HidBus/HidBus.hpp"
-#include "../HidBus/HID_UNIT_CONFIG.hpp"
+// #include "../HidBus/HID_UNIT_CONFIG.hpp"
 
 int main()
 {
@@ -30,20 +30,22 @@ int main()
 
 ISR(USART_RXC_vect)
 {
-	HidBus::HidPackage package = HidBus::RecieveData();
-	if(package.header.DEST_UID == HidBus::UID)
+	HidBus::HidPackage package = {0,0,0,0};
+	switch(HidBus::RecieveData(package))
 	{
-		switch(package.DATA[0])
-		{
-			case LED_ON:
-				PORTD |= (1<<5);
-				/* 00 00 01 00 01 00 30 03 -- package to call this command*/
-			break;
+		case 0:
+			switch(package.DATA[0])
+			{
+				case LED_ON:
+					PORTD |= (1<<5);
+					/* 00 00 01 00 01 00 30 03 -- package to call this command*/
+				break;
 
-			case LED_OFF:
-				PORTD &= ~(1<<5);
-				/* 00 00 01 00 01 00 30 02 -- package to call this command*/
-			break;
-		};
+				case LED_OFF:
+					PORTD &= ~(1<<5);
+					/* 00 00 01 00 01 00 30 02 -- package to call this command*/
+				break;
+			};
+		break;
 	};
 };

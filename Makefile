@@ -1,3 +1,7 @@
+#Developer makefile
+#Building demo project and doing something more
+
+
 #Controller:
 MMCU = atmega16
 
@@ -13,8 +17,8 @@ CFLAGS = -Wall -O1 -mmcu=$(MMCU) -D F_CPU=$(FREQ)
 #Output file way:
 OUTPUT = build
 
-all: AvrUart.o main.o
-	$(CC) $(CFLAGS) $(OUTPUT)/AvrUart.o $(OUTPUT)/main.o -o $(OUTPUT)/main
+all: AvrUart.o main.o HidBus.o
+	$(CC) $(CFLAGS) $(OUTPUT)/AvrUart.o $(OUTPUT)/HidBus.o $(OUTPUT)/main.o -o $(OUTPUT)/main
 	avr-objcopy -j .text -j .data -O ihex  $(OUTPUT)/main  $(OUTPUT)/main.hex
 	minipro -p $(MMCU) -w $(OUTPUT)/main.hex -I
 	minipro -p $(MMCU) -w fuse_bits/$(MMCU).conf -c config -e -I
@@ -24,6 +28,9 @@ AvrUart.o:
 
 main.o:
 	$(CC) $(CFLAGS) -c tests/main.cpp -o $(OUTPUT)/main.o
+
+HidBus.o:
+	$(CC) $(CFLAGS) -c HidBus/HidBus.cpp -o $(OUTPUT)/HidBus.o
 
 readFuseBits:
 	minipro -p $(MMCU) -r fuse_bits/$(MMCU).conf -c config -e -I

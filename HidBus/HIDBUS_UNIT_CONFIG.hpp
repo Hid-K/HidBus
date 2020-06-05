@@ -4,9 +4,6 @@
 const unsigned int UID		= 1;
 #define UID_EEPROM_ADDR		0x00
 
-unsigned int BRIGHTNESS			= 0;
-#define BRIGHTNESS_EEPROM_ADDR	0x03
-
 /*UNIT COMMANDS DEFINE*/
 
 // #define SET_BRIGHTNESS  = 0x01;
