@@ -19,7 +19,7 @@ unsigned char HidBus::getCRC(const unsigned char * data, unsigned char dataLen)
 
 void HidBus::SendData(const void * data, unsigned int dataLen, unsigned int dest_uid)
 {
-	// while ( (UCSRA & (1<<RXC)) ); //Waiting before uart data will be unavailable
+	while ( (UCSRA & (1<<RXC)) ); //Waiting before uart data will be unavailable
 	
 	/*Building package header*/
 	HidPkgHeader header = {
