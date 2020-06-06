@@ -17,6 +17,7 @@ CFLAGS = -Wall -O1 -mmcu=$(MMCU) -D F_CPU=$(FREQ)
 #Output file way:
 OUTPUT = build
 
+
 all: AvrUart.o main.o HidBus.o
 	$(CC) $(CFLAGS) $(OUTPUT)/AvrUart.o $(OUTPUT)/HidBus.o $(OUTPUT)/main.o -o $(OUTPUT)/main
 	avr-objcopy -j .text -j .data -O ihex  $(OUTPUT)/main  $(OUTPUT)/main.hex
