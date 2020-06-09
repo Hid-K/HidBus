@@ -21,8 +21,8 @@ OUTPUT = build
 all: AvrUart.o main.o HidBus.o
 	$(CC) $(CFLAGS) $(OUTPUT)/AvrUart.o $(OUTPUT)/HidBus.o $(OUTPUT)/main.o -o $(OUTPUT)/main
 	avr-objcopy -j .text -j .data -O ihex  $(OUTPUT)/main  $(OUTPUT)/main.hex
-	minipro -p $(MMCU) -w $(OUTPUT)/main.hex
-	minipro -p $(MMCU) -w fuse_bits/$(MMCU).conf -c config -e
+	minipro -p $(MMCU) -w $(OUTPUT)/main.hex -I
+	minipro -p $(MMCU) -w fuse_bits/$(MMCU).conf -c config -e -I
 
 AvrUart.o:
 	$(CC) $(CFLAGS) -c ../HidBus/UART/AvrUart.cpp -o $(OUTPUT)/AvrUart.o

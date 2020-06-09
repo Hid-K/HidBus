@@ -52,7 +52,8 @@ signed char HidBus::RecieveData(HidBus::HidPackage & packageBuf)
 		asm("sei");
 
 	if (packageBuf.header.DEST_UID == UID &&
-		packageBuf.header.DATALen <= sizeof(HidPackage::DATA))
+		packageBuf.header.DATALen <= sizeof(HidPackage::DATA) &&
+		packageBuf.header.crc == getCRC(packageBuf.DATA, packageBuf.header.DATALen))
 	{
 		return 0;
 	}
